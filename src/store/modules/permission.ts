@@ -111,15 +111,16 @@ function filterChildren(childrenMap: any, lastRouter: any = false) {
 export function filterDynamicRoutes(routes: any[]) {
     const res = <any>[]
     routes.forEach(route => {
-        if (route.permissions) {
-            // if (auth.hasPermiOr(route.permissions)) {
+        /* if (route.permissions) {
+            if (auth.hasPermiOr(route.permissions)) {
             res.push(route)
-            // }
+            }
         } else if (route.roles) {
-            // if (auth.hasRoleOr(route.roles)) {
+            if (auth.hasRoleOr(route.roles)) {
             res.push(route)
-            // }
-        }
+            }
+        } */
+        res.push(route)
     })
     return res
 }

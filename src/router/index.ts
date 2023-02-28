@@ -3,6 +3,17 @@ import Layout from '@/layout/index.vue'
 
 export const constantRoutes = [
     {
+        path: '/redirect',
+        component: Layout,
+        hidden: true,
+        children: [
+            {
+                path: '/redirect/:path(.*)',
+                component: () => import('@/views/redirect/index.vue')
+            }
+        ]
+    },
+    {
         path: "/login",
         component: () => import('@/views/login.vue'),
         hidden: true
@@ -32,7 +43,21 @@ export const constantRoutes = [
     }
 ]
 
-export const dynamicRoutes = []
+export const dynamicRoutes = [
+    {
+        path: '/system/_user/auth',
+        component: Layout,
+        hidden: true,
+        children: [
+            {
+                path: 'role/:userId(\\d+)',
+                component: () => import('@/views/system/user/authRole.vue'),
+                name: 'AuthRole',
+                meta: { title: '分配角色', activeMenu: '/system/user' }
+            }
+        ]
+    }
+]
 
 const router = createRouter({
     history: createWebHistory(),

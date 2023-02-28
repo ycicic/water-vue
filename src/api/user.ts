@@ -45,9 +45,26 @@ export const resetUserPwd = (userId: string, password: string) => {
     })
 }
 
-export const delUser = (userId: string) => {
+export const delUser = (userIds: any) => {
     return request({
-        url: '/system/user/remove/' + userId,
+        url: '/system/user/remove/' + userIds,
         method: 'post'
+    })
+}
+
+// 查询授权角色
+export function getAuthRole(userId: any) {
+    return request({
+        url: '/system/user/authRole/' + userId,
+        method: 'get'
+    })
+}
+
+// 保存授权角色
+export function updateAuthRole(data: any) {
+    return request({
+        url: '/system/user/authRole',
+        method: 'post',
+        data: data
     })
 }

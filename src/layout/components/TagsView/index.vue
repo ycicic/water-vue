@@ -38,6 +38,7 @@ import ScrollPane from './ScrollPane.vue'
 import { getNormalPath } from '@/utils/water'
 import useTagsViewStore from '@/store/modules/tagsView'
 import usePermissionStore from '@/store/modules/permission'
+import tab from '@/plugins/tab';
 
 const visible = ref(false);
 const top = ref(0);
@@ -142,24 +143,24 @@ function moveToCurrentTag() {
   })
 }
 function refreshSelectedTag(view: any) {
-  proxy.$tab.refreshPage(view);
+  tab.refreshPage(view);
 }
 function closeSelectedTag(view: any) {
-  proxy.$tab.closePage(view).then((visitedViews: any) => {
+  tab.closePage(view).then((visitedViews: any) => {
     if (isActive(view)) {
       toLastView(visitedViews, view)
     }
   })
 }
 function closeRightTags() {
-  proxy.$tab.closeRightPage(selectedTag.value).then((visitedViews: any) => {
+  tab.closeRightPage(selectedTag.value).then((visitedViews: any) => {
     if (!visitedViews.find((i: any) => i.fullPath === route.fullPath)) {
       toLastView(visitedViews)
     }
   })
 }
 function closeLeftTags() {
-  proxy.$tab.closeLeftPage(selectedTag.value).then((visitedViews: any) => {
+  tab.closeLeftPage(selectedTag.value).then((visitedViews: any) => {
     if (!visitedViews.find((i: any) => i.fullPath === route.fullPath)) {
       toLastView(visitedViews)
     }
@@ -167,12 +168,12 @@ function closeLeftTags() {
 }
 function closeOthersTags() {
   router.push(selectedTag.value).catch(() => { });
-  proxy.$tab.closeOtherPage(selectedTag.value).then(() => {
+  tab.closeOtherPage(selectedTag.value).then(() => {
     moveToCurrentTag()
   })
 }
 function closeAllTags(view: any) {
-  proxy.$tab.closeAllPage().then((visitedViews: any) => {
+  tab.closeAllPage().then((visitedViews: any) => {
     if (affixTags.value.some((tag: any) => tag.path === route.path)) {
       return
     }

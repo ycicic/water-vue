@@ -34,3 +34,8 @@ export const userStatusEnum = getEnumManager('userStatus', [
     { value: 0, label: '正常' },
     { value: 1, label: '停用' },
 ])
+
+export const roleStatusEnum = getEnumManager('roleStatusEnum', [
+    { value: 0, label: '正常' },
+    { value: 1, label: '停用' },
+])
