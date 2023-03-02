@@ -19,7 +19,7 @@ const useUserStore = defineStore('user', {
 
             return new Promise((resolve: any, reject: any) => {
                 login(userName, password, code, uuid).then(res => {
-                    setToken(res)
+                    setToken(res.data)
                     resolve()
                 }).catch(err => {
                     reject(err)
@@ -29,7 +29,7 @@ const useUserStore = defineStore('user', {
         getInfo() {
             return new Promise((resolve: any, reject: any) => {
                 getInfo().then(r => {
-                    const res = r as any
+                    const res = r.data
                     const user = res.user
                     const avatar = (user.avatar == "" || user.avatar == null) ? defAva : import.meta.env.VITE_APP_BASE_API + user.avatar
 

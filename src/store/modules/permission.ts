@@ -32,11 +32,12 @@ const usePermissionStore = defineStore('permission', {
         generateRoutes() {
             return new Promise(resolve => {
                 // 向后端请求路由数据
-                getRouters().then(res => {
+                getRouters().then(r => {
+                    const res = r.data
                     const sdata = JSON.parse(JSON.stringify(res))
                     const rdata = JSON.parse(JSON.stringify(res))
                     const defaultData = JSON.parse(JSON.stringify(res))
-                    
+
                     const sidebarRoutes = filterAsyncRouter(sdata)
                     const rewriteRoutes = filterAsyncRouter(rdata, false, true)
                     const defaultRoutes = filterAsyncRouter(defaultData)

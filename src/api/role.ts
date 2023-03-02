@@ -40,3 +40,39 @@ export const saveRole = (data: any) => {
         data: data
     })
 }
+
+// 查询角色已分配用户
+export const pageAllocatedUser = (query: any) => {
+    return request({
+        url: '/system/role/auth/allocated/page',
+        method: 'get',
+        params: query
+    })
+}
+
+// 查询角色未分配用户
+export const pageUnallocatedUser = (query: any) => {
+    return request({
+        url: '/system/role/auth/unallocated/page',
+        method: 'get',
+        params: query
+    })
+}
+
+// 批量取消用户授权角色
+export function cancelAuthUser(data: any) {
+    return request({
+        url: '/system/role/auth/cancel',
+        method: 'post',
+        data: data
+    })
+}
+
+// 批量授权用户角色
+export function updateAuthUser(data: any) {
+    return request({
+        url: '/system/role/auth/user',
+        method: 'post',
+        data: data
+    })
+}

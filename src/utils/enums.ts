@@ -31,11 +31,11 @@ export const genderEnum = getEnumManager('gender', [
 ])
 
 export const userStatusEnum = getEnumManager('userStatus', [
-    { value: 0, label: '正常' },
-    { value: 1, label: '停用' },
+    { value: 0, label: '正常', type: 'success' },
+    { value: 1, label: '停用', type: 'danger' },
 ])
 
 export const roleStatusEnum = getEnumManager('roleStatusEnum', [
-    { value: 0, label: '正常' },
-    { value: 1, label: '停用' },
+    { value: 0, label: '正常', type: 'success' },
+    { value: 1, label: '停用', type: 'danger' },
 ])

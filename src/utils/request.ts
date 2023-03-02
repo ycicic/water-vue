@@ -85,7 +85,7 @@ export default (config: any) => {
                 })
                 return Promise.reject('error')
             } else {
-                return Promise.resolve(response.data.data)
+                return Promise.resolve(response.data)
             }
         },
         (error: any) => {

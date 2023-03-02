@@ -146,7 +146,7 @@ function refreshSelectedTag(view: any) {
   tab.refreshPage(view);
 }
 function closeSelectedTag(view: any) {
-  tab.closePage(view).then((visitedViews: any) => {
+  tab.closePage(view).then(({ visitedViews }: any) => {
     if (isActive(view)) {
       toLastView(visitedViews, view)
     }
@@ -173,7 +173,7 @@ function closeOthersTags() {
   })
 }
 function closeAllTags(view: any) {
-  tab.closeAllPage().then((visitedViews: any) => {
+  tab.closeAllPage().then(({ visitedViews }: any) => {
     if (affixTags.value.some((tag: any) => tag.path === route.path)) {
       return
     }

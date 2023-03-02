@@ -55,7 +55,7 @@ export const delUser = (userIds: any) => {
 // 查询授权角色
 export function getAuthRole(userId: any) {
     return request({
-        url: '/system/user/authRole/' + userId,
+        url: '/system/user/auth/role/' + userId,
         method: 'get'
     })
 }
@@ -63,7 +63,7 @@ export function getAuthRole(userId: any) {
 // 保存授权角色
 export function updateAuthRole(data: any) {
     return request({
-        url: '/system/user/authRole',
+        url: '/system/user/auth/role',
         method: 'post',
         data: data
     })

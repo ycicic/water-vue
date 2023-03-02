@@ -100,8 +100,8 @@ function close() {
     if (userId) {
         loading.value = true
         getAuthRole(userId).then((response: any) => {
-            form.value = response.user
-            roles.value = response.roles
+            form.value = response.data.user
+            roles.value = response.data.roles
             total.value = roles.value.length
             nextTick(() => {
                 roles.value.forEach((row: any) => {

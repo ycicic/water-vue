@@ -39,9 +39,9 @@
             <el-table-column label="ID" align="center" prop="id" width="150" />
             <el-table-column label="角色名称" align="center" prop="roleName" :show-overflow-tooltip="true" width="150" />
             <el-table-column label="显示顺序" align="center" prop="roleSort" width="100" />
-            <el-table-column label="状态" align="center" width="100">
+            <el-table-column label="状态" align="center" key="stats" width="100">
                 <template #default="scope">
-                    <el-switch v-model="scope.row.status" :active-value="0" :inactive-value="1"
+                    <el-switch :model-value="scope.row.status" :active-value="0" :inactive-value="1"
                         @change="handleStatusChange(scope.row)"></el-switch>
                 </template>
             </el-table-column>
@@ -86,16 +86,12 @@
                             {{ dict.label }}</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <!-- <el-form-item label="菜单权限">
-                    <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</el-checkbox>
-                    <el-checkbox v-model="menuNodeAll"
-                        @change="handleCheckedTreeNodeAll($event, 'menu')">全选/全不选</el-checkbox>
-                    <el-checkbox v-model="saveParams.menuCheckStrictly"
-                        @change="handleCheckedTreeConnect($event, 'menu')">父子联动</el-checkbox>
+                <el-form-item label="菜单权限">
+                    <el-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event)">展开/折叠</el-checkbox>
+                    <el-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event)">全选/全不选</el-checkbox>
                     <el-tree class="tree-border" :data="menuOptions" show-checkbox ref="menuRef" node-key="id"
-                        :check-strictly="!saveParams.menuCheckStrictly" empty-text="加载中，请稍候"
-                        :props="{ label: 'label', children: 'children' }"></el-tree>
-                </el-form-item> -->
+                        empty-text="加载中，请稍候" :props="{ label: 'label', children: 'children' }"></el-tree>
+                </el-form-item>
                 <el-form-item label="备注">
                     <el-input v-model="saveParams.remark" type="textarea" placeholder="请输入内容"></el-input>
                 </el-form-item>
@@ -107,43 +103,13 @@
                 </div>
             </template>
         </el-dialog>
-
-        <!-- 分配角色数据权限对话框 -->
-        <!-- <el-dialog :title="title" v-model="openDataScope" width="500px" append-to-body>
-            <el-form :model="form" label-width="80px">
-                <el-form-item label="角色名称">
-                    <el-input v-model="form.roleName" :disabled="true" />
-                </el-form-item>
-                <el-form-item label="权限范围">
-                    <el-select v-model="form.dataScope" @change="dataScopeSelectChange">
-                        <el-option v-for="item in dataScopeOptions" :key="item.value" :label="item.label"
-                            :value="item.value"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="数据权限" v-show="form.dataScope == 2">
-                    <el-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</el-checkbox>
-                    <el-checkbox v-model="deptNodeAll"
-                        @change="handleCheckedTreeNodeAll($event, 'dept')">全选/全不选</el-checkbox>
-                    <el-checkbox v-model="form.deptCheckStrictly"
-                        @change="handleCheckedTreeConnect($event, 'dept')">父子联动</el-checkbox>
-                    <el-tree class="tree-border" :data="deptOptions" show-checkbox default-expand-all ref="deptRef"
-                        node-key="id" :check-strictly="!form.deptCheckStrictly" empty-text="加载中，请稍候"
-                        :props="{ label: 'label', children: 'children' }"></el-tree>
-                </el-form-item>
-            </el-form>
-            <template #footer>
-                <div class="dialog-footer">
-                    <el-button type="primary" @click="submitDataScope">确 定</el-button>
-                    <el-button @click="cancelDataScope">取 消</el-button>
-                </div>
-            </template>
-        </el-dialog> -->
     </div>
 </template>
  
 <script setup lang="ts">
 import { roleStatusEnum } from '@/utils/enums'
 import { changeRoleStatus, delRole, getRole, pageRole, saveRole } from '@/api/role'
+import { treeMyMenu, queryIdByRoleId } from '@/api/menu'
 import modal from '@/utils/modal'
 import router from '@/router';
 
@@ -163,6 +129,7 @@ const saveOpen = ref(false)
 const menuOptions = ref(<any>[])
 const menuExpand = ref(false)
 const menuNodeAll = ref(false)
+const menuRef = ref()
 
 const data = reactive({
     saveParams: {
@@ -170,7 +137,7 @@ const data = reactive({
         roleName: undefined,
         roleSort: 0,
         status: 0,
-        menuCheckStrictly: undefined,
+        menuIds: <any>[],
         remark: undefined,
     },
     queryParams: {
@@ -202,8 +169,8 @@ function getList() {
     loading.value = true
     pageRole(proxy.addDateRange(queryParams.value, dateRange.value, 'Create')).then((res: any) => {
         loading.value = false
-        roleList.value = res.records
-        total.value = res.total
+        roleList.value = res.data.records
+        total.value = res.data.total
     }).catch(() => {
         loading.value = false
     })
@@ -221,7 +188,7 @@ function resetSave() {
         roleName: undefined,
         roleSort: 0,
         status: 0,
-        menuCheckStrictly: undefined,
+        menuIds: <any>[],
         remark: undefined,
     }
     proxy.resetForm("saveRef")
@@ -234,16 +201,31 @@ function handleAdd() {
 }
 
 function handleUpdate(row: any) {
-    console.log(row);
-    
     resetSave()
     const id = row.id || ids.value
-    getRole(id).then((res: any) => {
+
+    treeMyMenu().then((res: any) => {
+        menuOptions.value = res.data
+    })
+
+    getRole(id).then((r: any) => {
+        const res = r.data
         for (const key in saveParams.value) {
             (saveParams.value as any)[key] = res[key]
         }
         saveOpen.value = true
         saveTitle.value = "修改角色"
+
+        nextTick(() => {
+            queryIdByRoleId(id).then((res: any) => {
+                res.data.forEach((v: any) => {
+                    nextTick(() => {
+                        menuRef.value.setChecked(v, true, false)
+                    })
+                })
+            })
+        })
+
     })
 }
 
@@ -268,12 +250,20 @@ function handleStatusChange(row: any) {
 }
 
 function handleAuthUser(row: any) {
-    router.push("/system/_role/auth/user/" + row.id)
+    router.push("/system/role/auth/user/" + row.id)
 }
 
 function saveSubmit() {
     proxy.$refs["saveRef"].validate((valid: any) => {
         if (valid) {
+            // 目前被选中的菜单节点
+            let checkedKeys = menuRef.value.getCheckedKeys();
+            // 半选中的菜单节点
+            let halfCheckedKeys = menuRef.value.getHalfCheckedKeys();
+            checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+            
+            saveParams.value.menuIds = checkedKeys
+
             saveRole(saveParams.value).then(() => {
                 modal.msgSuccess("保存成功")
                 saveOpen.value = false
@@ -286,6 +276,25 @@ function saveSubmit() {
 function saveCancel() {
     saveOpen.value = false
     resetSave()
+}
+
+function handleCheckedTreeExpand(value: boolean) {
+    let treeList = menuOptions.value
+    treeExpand(treeList, value)
+}
+
+function treeExpand(treeList: any[], value: boolean) {
+    for (let i = 0; i < treeList.length; i++) {
+        menuRef.value.store.nodesMap[treeList[i].id].expanded = value;
+        let children = treeList[i].children
+        if (children) {
+            treeExpand(children, value)
+        }
+    }
+}
+
+function handleCheckedTreeNodeAll(value: any) {
+    menuRef.value.setCheckedNodes(value ? menuOptions.value : []);
 }
 
 getList()

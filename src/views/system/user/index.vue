@@ -269,7 +269,7 @@ function handleUpdate(row: any) {
     const id = row.id || ids.value
     getUser(id).then((res: any) => {
         for (const key in saveParams.value) {
-            (saveParams.value as any)[key] = res[key]
+            (saveParams.value as any)[key] = res.data[key]
         }
         saveOpen.value = true
         SaveTitle.value = "修改用户"
@@ -288,7 +288,7 @@ function handleDelete(row: any) {
 
 function handleAuthRole(row: any) {
     const id = row.id
-    router.push("/system/_user/auth/role/" + id)
+    router.push("/system/user/auth/role/" + id)
 }
 
 /** 重置密码按钮操作 */
@@ -326,8 +326,8 @@ function getList() {
     loading.value = true
     pageUser(proxy.addDateRange(queryParams.value, dateRange.value, 'Create')).then((res: any) => {
         loading.value = false
-        userList.value = res.records
-        total.value = res.total
+        userList.value = res.data.records
+        total.value = res.data.total
     }).catch(() => {
         loading.value = false
     })

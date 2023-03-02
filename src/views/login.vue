@@ -30,8 +30,7 @@
             </el-form-item>
             <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
             <el-form-item style="width:100%;">
-                <el-button :loading="loading" size="large" type="primary" style="width:100%;"
-                    @click.prevent="handleLogin">
+                <el-button :loading="loading" size="large" type="primary" style="width:100%;" @click.prevent="handleLogin">
                     <span v-if="!loading">登 录</span>
                     <span v-else>登 录 中...</span>
                 </el-button>
@@ -85,7 +84,7 @@ function handleLogin() {
     proxy.$refs.loginRef.validate((valid: boolean) => {
         if (valid) {
             loading.value = true;
-            
+
             // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
             if (loginForm.value.rememberMe) {
                 Cookies.set("userName", loginForm.value.userName, { expires: 30 });
@@ -112,7 +111,8 @@ function handleLogin() {
 }
 
 function getCode() {
-    getCodeImg().then((res: any) => {
+    getCodeImg().then((r: any) => {
+        const res = r.data
         codeUrl.value = "data:image/gif;base64," + res.img;
         loginForm.value.uuid = res.uuid;
     });
