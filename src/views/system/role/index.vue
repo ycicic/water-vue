@@ -111,7 +111,7 @@ import { roleStatusEnum } from '@/utils/enums'
 import { changeRoleStatus, delRole, getRole, pageRole, saveRole } from '@/api/role'
 import { treeMyMenu, queryIdByRoleId } from '@/api/menu'
 import modal from '@/utils/modal'
-import router from '@/router';
+import router from '@/router'
 
 const { proxy } = getCurrentInstance() as any
 const loading = ref(true)

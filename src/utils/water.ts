@@ -72,7 +72,7 @@ export function parseStrEmpty(str: string) {
     return str;
 }
 
-export function handleTree(data: any[], id: string, parentId: string, children: any) {
+export function handleTree(data: any[], id?: string, parentId?: string, children?: any) {
     let config = {
         id: id || 'id',
         parentId: parentId || 'parentId',

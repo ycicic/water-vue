@@ -24,6 +24,7 @@ app.config.globalProperties.$tab = tab
 app.config.globalProperties.parseTime = parseTime
 app.config.globalProperties.addDateRange = addDateRange
 app.config.globalProperties.resetForm = resetForm
+app.config.globalProperties.$icons = []
 
 app.component('Pagination',Pagination)
 
@@ -33,6 +34,7 @@ app.use({
     install: (app: any) => {
         for (const key in components) {
             const componentConfig = (components as any)[key];
+            app.config.globalProperties.$icons.push(componentConfig.name)
             app.component(componentConfig.name, componentConfig);
         }
     },
